@@ -1,41 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>Temperature Hot</title>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
     <style>
-        body {
-            background: url(images/bg-image.jpg) no-repeat;
-            background-size: cover;
-            height: 100vh;
-        }
+      body {
+        background: url(images/bg-image.jpg) no-repeat;
+        background-size: cover;
+        height: 100vh;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <form class="col-md-6 m-auto py-5">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Enter a location for Weather ...">
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-danger">Search</button>
-                </div>
-            </div>
-        </form>
-        <div class="weather-status text-white text-center">
-            <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
-            <h1>Dhaka</h1>
-            <h3><span>38.06</span>&deg;C</h3>
-            <h1 class="lead">Clouds</h1>
+      <form class="col-md-6 m-auto py-5">
+        <div class="input-group mb-3">
+          <input
+            id="location"
+            type="text"
+            class="form-control"
+            placeholder="Enter a location for Weather ..."
+          />
+          <div class="input-group-append">
+            <button id="searchBtn" type="button" class="btn btn-danger">
+              Search
+            </button>
+          </div>
         </div>
+      </form>
+      <div class="weather-status text-white text-center">
+        <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="" />
+        <h1 id="city"></h1>
+        <h3><span id="temperature"></span>&deg;C</h3>
+        <h1 id="condition" class="lead"></h1>
+      </div>
     </div>
 
-</body>
+    <script>
+      let searchBtn = document.getElementById("searchBtn");
+      let city = document.getElementById("city");
+      let temperature = document.getElementById("temperature");
+      let condition = document.getElementById("condition");
 
+      searchBtn.addEventListener("click", () => {
+        let userInput = document.getElementById("location").value;
+        console.log(userInput);
+        console.log(userInput.length);
+        if (userInput.length == 0) {
+          alert("Your input is empty");
+        } else {
+          fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${userInput}&appid=1874531568a15b26a2d4567b91bc169e`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              console.log(data.name);
+              console.log(temperatureConverter(data.main.temp));
+              console.log(data.weather[0].main);
+              city.innerText = data.name;
+              convertTemperature = temperatureConverter(data.main.temp);
+              temperature.innerText = convertTemperature;
+              condition.innerText = data.weather[0].main;
+            });
+        }
+      });
+
+      function temperatureConverter(valNum) {
+        valNum = parseFloat(valNum);
+        return (valNum - 273).toFixed(2);
+      }
+    </script>
+  </body>
 </html>
